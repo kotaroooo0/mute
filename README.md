@@ -4,6 +4,8 @@
 
 Visualization of prefix match using trie tree.
 
+<img src="https://user-images.githubusercontent.com/31947384/91878632-8ce34c00-ecba-11ea-8ab7-fea3e380b7ea.png" width="160">
+
 ## setup
 
 ```sh
