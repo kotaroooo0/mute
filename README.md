@@ -13,7 +13,7 @@ kingdom
 macbook
 ```
 
-<img src="https://user-images.githubusercontent.com/31947384/91884437-ff572a80-ecc0-11ea-9ebb-f33d19f3af64.png" width="160">
+<img src="https://user-images.githubusercontent.com/31947384/91886968-126bf980-ecc5-11ea-8209-3b7131a6c3f2.png" width="160">
 
 ## setup
 
