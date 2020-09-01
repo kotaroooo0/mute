@@ -18,5 +18,5 @@ $ make
 
 # TODO: Ideal
 $ go get github.com/kotaroooo0/mute
-$ mute
+$ mute -f data.txt -o .
 ```
