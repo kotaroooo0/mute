@@ -4,7 +4,16 @@
 
 Visualization of prefix match using trie tree.
 
-<img src="https://user-images.githubusercontent.com/31947384/91878632-8ce34c00-ecba-11ea-8ab7-fea3e380b7ea.png" width="160">
+```
+# data.txt
+keynote
+keycase
+king
+kingdom
+macbook
+```
+
+<img src="https://user-images.githubusercontent.com/31947384/91884437-ff572a80-ecc0-11ea-9ebb-f33d19f3af64.png" width="160">
 
 ## setup
 
