@@ -51,7 +51,7 @@ func readWords() ([]string, error) {
 
 // Trie木を生成
 func generateTrie(words []string) *Node {
-	t := newNode("", make(map[rune]*Node))
+	t := newNode("", make(map[rune]*Node), false)
 	for _, w := range words {
 		t.insert(w)
 	}
@@ -64,14 +64,16 @@ type Node struct {
 	ID       int
 	Key      string
 	Children map[rune]*Node
+	End      bool
 }
 
-func newNode(k string, c map[rune]*Node) *Node {
+func newNode(k string, c map[rune]*Node, e bool) *Node {
 	id++
 	return &Node{
 		ID:       id,
 		Key:      k,
 		Children: c,
+		End:      e,
 	}
 }
 
@@ -82,28 +84,39 @@ func (n *Node) getLabel() string {
 	return n.Key
 }
 
+func (n *Node) getColor() string {
+	if n.End {
+		return "\"#ff0000\""
+	}
+	return "\"#000000\""
+}
+
 func (n *Node) insert(w string) error {
 	runes := []rune(w)
 	currentNode := n
-	for _, r := range runes {
+	for i, r := range runes {
 		if nextNode, ok := currentNode.Children[r]; ok {
 			currentNode = nextNode
 		} else {
-			currentNode.Children[r] = newNode(string(r), make(map[rune]*Node))
+			currentNode.Children[r] = newNode(string(r), make(map[rune]*Node), false)
 			currentNode = currentNode.Children[r]
+		}
+		if i == len(runes)-1 {
+			currentNode.End = true
 		}
 	}
 	return nil
 }
 
+var fontSize = "35"
 var g = gographviz.NewGraph()
 
 func dfs(n *Node) error {
 	for _, v := range n.Children {
-		if err := g.AddNode("G", strconv.Itoa(n.ID), map[string]string{"label": n.getLabel(), "fontsize": "35"}); err != nil {
+		if err := g.AddNode("G", strconv.Itoa(n.ID), map[string]string{"label": n.getLabel(), "fontcolor": n.getColor(), "fontsize": fontSize}); err != nil {
 			return err
 		}
-		if err := g.AddNode("G", strconv.Itoa(v.ID), map[string]string{"label": v.getLabel(), "fontsize": "35"}); err != nil {
+		if err := g.AddNode("G", strconv.Itoa(v.ID), map[string]string{"label": v.getLabel(), "fontcolor": v.getColor(), "fontsize": fontSize}); err != nil {
 			return err
 		}
 		if err := g.AddEdge(strconv.Itoa(n.ID), strconv.Itoa(v.ID), true, nil); err != nil {
