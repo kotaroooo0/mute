@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/awalterschulze/gographviz"
 )
@@ -35,13 +35,8 @@ func readWords() ([]string, error) {
 
 	words := []string{}
 	s := bufio.NewScanner(f)
-	replace := []string{"@", " ", "　", "　", "(", "（", ")", "）", ",", "-", "/"}
 	for s.Scan() {
-		t := s.Text()
-		for _, r := range replace {
-			t = strings.Replace(t, r, "", -1)
-		}
-		words = append(words, t)
+		words = append(words, s.Text())
 	}
 	if err := s.Err(); err != nil {
 		return nil, err
@@ -79,9 +74,9 @@ func newNode(k string, c map[rune]*Node, e bool) *Node {
 
 func (n *Node) getLabel() string {
 	if n.Key == "" {
-		return "0"
+		return "\"0\""
 	}
-	return n.Key
+	return fmt.Sprintf("\"%s\"", n.Key)
 }
 
 func (n *Node) getShape() string {
