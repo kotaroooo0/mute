@@ -79,16 +79,16 @@ func newNode(k string, c map[rune]*Node, e bool) *Node {
 
 func (n *Node) getLabel() string {
 	if n.Key == "" {
-		return "ROOT"
+		return "0"
 	}
 	return n.Key
 }
 
-func (n *Node) getColor() string {
+func (n *Node) getShape() string {
 	if n.End {
-		return "\"#ff0000\""
+		return "\"doublecircle\""
 	}
-	return "\"#000000\""
+	return "\"circle\""
 }
 
 func (n *Node) insert(w string) error {
@@ -101,6 +101,8 @@ func (n *Node) insert(w string) error {
 			currentNode.Children[r] = newNode(string(r), make(map[rune]*Node), false)
 			currentNode = currentNode.Children[r]
 		}
+
+		// 終端にチェック
 		if i == len(runes)-1 {
 			currentNode.End = true
 		}
@@ -113,10 +115,10 @@ var g = gographviz.NewGraph()
 
 func dfs(n *Node) error {
 	for _, v := range n.Children {
-		if err := g.AddNode("G", strconv.Itoa(n.ID), map[string]string{"label": n.getLabel(), "fontcolor": n.getColor(), "fontsize": fontSize}); err != nil {
+		if err := g.AddNode("G", strconv.Itoa(n.ID), map[string]string{"label": n.getLabel(), "shape": n.getShape(), "fontsize": fontSize}); err != nil {
 			return err
 		}
-		if err := g.AddNode("G", strconv.Itoa(v.ID), map[string]string{"label": v.getLabel(), "fontcolor": v.getColor(), "fontsize": fontSize}); err != nil {
+		if err := g.AddNode("G", strconv.Itoa(v.ID), map[string]string{"label": v.getLabel(), "shape": v.getShape(), "fontsize": fontSize}); err != nil {
 			return err
 		}
 		if err := g.AddEdge(strconv.Itoa(n.ID), strconv.Itoa(v.ID), true, nil); err != nil {
