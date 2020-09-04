@@ -19,13 +19,12 @@ macbook
 
 ```sh
 $ brew install graphviz
-
-$ git clone https://github.com/kotaroooo0/mute.git
-$ cd mute
-$ vi data.txt # create data text for trie. see: data.txt.sample
-$ make
-
-# TODO: Ideal
 $ go get github.com/kotaroooo0/mute
-$ mute -f data.txt -o .
+
+# create data text for trie. see: data.txt.sample
+$ vi data.txt
+$ mute -s data.txt | dot -T png -o sample.png
+
+# only create .dot
+$ mute -s data.txt -o sample.dot
 ```

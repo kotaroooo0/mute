@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -17,17 +19,28 @@ func main() {
 }
 
 func run() error {
-	words, err := readWords()
+	source := flag.String("s", "", "data source (required)")
+	output := flag.String("o", "", "output file")
+	flag.Parse()
+
+	if *source == "" {
+		flag.Usage()
+		return fmt.Errorf("-s data source is must be required")
+	}
+
+	words, err := readWords(*source)
 	if err != nil {
 		return err
 	}
 
-	return generateDotfile(generateTrie(words))
+	dotfile, err := generateDotfile(generateTrie(words), *output)
+	fmt.Println(dotfile)
+	return err
 }
 
 // ファイルから入力
-func readWords() ([]string, error) {
-	f, err := os.Open("data.txt")
+func readWords(source string) ([]string, error) {
+	f, err := os.Open(source)
 	if err != nil {
 		return nil, err
 	}
@@ -130,18 +143,20 @@ func dfs(n *Node) error {
 }
 
 // Trie木からdotファイルを生成
-func generateDotfile(trie *Node) error {
-
+func generateDotfile(trie *Node, output string) (string, error) {
 	g.SetName("G")
 	g.SetDir(true)
 	if err := dfs(trie); err != nil {
-		return err
+		return "", err
 	}
 
-	f, err := os.Create("trie.dot")
-	if err != nil {
-		return err
+	if output != "" {
+		f, err := os.Create(output)
+		if err != nil {
+			return "", err
+		}
+		f.WriteString(g.String())
+		return "", nil
 	}
-	f.WriteString(g.String())
-	return nil
+	return g.String(), nil
 }
