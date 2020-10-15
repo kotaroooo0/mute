@@ -117,32 +117,24 @@ func (n *Node) insert(w string) error {
 	return nil
 }
 
-var fontSize = "35"
-var g = gographviz.NewGraph()
-
-func dfs(n *Node) error {
-	for _, v := range n.Children {
-		if err := g.AddNode("G", strconv.Itoa(n.ID), map[string]string{"label": n.getLabel(), "shape": n.getShape(), "fontsize": fontSize}); err != nil {
-			return err
-		}
-		if err := g.AddNode("G", strconv.Itoa(v.ID), map[string]string{"label": v.getLabel(), "shape": v.getShape(), "fontsize": fontSize}); err != nil {
-			return err
-		}
-		if err := g.AddEdge(strconv.Itoa(n.ID), strconv.Itoa(v.ID), true, nil); err != nil {
-			return err
-		}
-		dfs(v)
-	}
-	return nil
-}
-
+// TODO: error handling
 // Trie木からdotファイルを生成
 func generateDotfile(trie *Node, output string) (string, error) {
+	g := gographviz.NewGraph()
 	g.SetName("G")
 	g.SetDir(true)
-	if err := dfs(trie); err != nil {
-		return "", err
+
+	var fontSize = "35"
+	var visitAll func(n *Node)
+	visitAll = func(n *Node) {
+		for _, v := range n.Children {
+			g.AddNode("G", strconv.Itoa(n.ID), map[string]string{"label": n.getLabel(), "shape": n.getShape(), "fontsize": fontSize})
+			g.AddNode("G", strconv.Itoa(v.ID), map[string]string{"label": v.getLabel(), "shape": v.getShape(), "fontsize": fontSize})
+			g.AddEdge(strconv.Itoa(n.ID), strconv.Itoa(v.ID), true, nil)
+			visitAll(v)
+		}
 	}
+	visitAll(trie)
 
 	if output != "" {
 		f, err := os.Create(output)
